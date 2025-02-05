@@ -1,0 +1,87 @@
+﻿@inject NavigationManager _nav
+
+@if( Server is not null)
+{
+    <tr style="background-color: @GetBackgroundColor()">
+        <td>@Server.Name</td>
+        <td>@Server.City</td>
+        
+        <td style="color:@((Server.IsOnline ? "green" : "red"))">
+            @(Server.IsOnline ? "online" : "offline")
+        </td>
+        <td>
+            @if (Server.IsOnline)
+            {
+                Random random = new Random();
+                int randomNumber = random.Next(0, 10000);
+                <text>@randomNumber online</text>
+            }
+            else { 
+                <text>N/A</text>
+            }
+        </td>
+        <td>
+            @if (Server.IsOnline)
+            {
+                <button type="button" class="btn btn-outline-danger"
+                    @onclick="@(()=> { Server.IsOnline = false;})">
+                    Turn Off
+                </button>
+            } 
+            else 
+            {
+                <button type="button" class="btn btn-outline-success"
+                    @onclick="@(()=> { Server.IsOnline = true;})">
+                    Turn On
+                </button>
+            }
+            &nbsp;
+            <a href="/Servers/@Server.Id" class="btn btn-link">Edit</a>
+        </td>
+        <td>
+            <EditForm Model="Server"
+                FormName="@($"form-Server-{Server.Id}")"
+                OnValidSubmit="@(() => { DeleteServer(Server.Id); })">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </EditForm>
+        </td>
+    </tr>
+}
+
+@code {
+    [Parameter]
+    public Server? Server { get; set; }
+
+    [CascadingParameter(Name ="SelectedCity")]
+    public string? SelectedCity { get; set; }
+
+      
+    // private void ChangeStatus()
+    // {
+    //     if (Server is not null)
+    //     {
+    //         Server.IsOnline = !Server.IsOnline;
+    //     }
+    // }
+
+    private void DeleteServer(int Id)
+    {
+        if (Id > 0)
+        {
+            ServersRepos.DeleteServer(Id);
+            _nav.NavigateTo("/servers", true);
+        }
+    }
+
+    private string GetBackgroundColor()
+    {
+        return SelectedCity switch
+        {
+            "Toronto"  => "lightblue",
+            "Calgary"  => "lightgreen",
+            "Montreal" => "lightcoral",
+            "Ottawa"   => "pink",
+                     _ => "white"
+        };
+    }
+}

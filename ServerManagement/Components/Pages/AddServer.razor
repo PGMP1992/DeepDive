@@ -1,0 +1,43 @@
+﻿@page "/servers/add"
+@* @rendermode InteractiveServer *@
+@inject NavigationManager _nav
+
+<h3>Add Server</h3>
+
+<EditForm Model="server" FormName="formServer" OnValidSubmit="Submit">
+    <DataAnnotationsValidator />
+    @* <ValidationSummary /> *@
+    
+    <FieldComponent Label="Name">
+        <Control>
+            <InputText @bind-Value="server.Name" class="form-control"></InputText>
+            <ValidationMessage For="() => server.Name"></ValidationMessage>
+        </Control>
+    </FieldComponent>
+
+    <FieldComponent Label="City">
+        <Control>
+            <InputText @bind-Value="server.City" class="form-control"></InputText>
+            <ValidationMessage For="() => server.City"></ValidationMessage>
+        </Control>
+    </FieldComponent>
+
+    <div class="btn-group mt-3">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="/servers" class="btn btn-outline-dark">Back</a>
+    </div>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private Server server { get; set; } = new Server() { IsOnline = false };
+
+    private void Submit()
+    {
+        if (server is not null)
+        {
+            ServersRepos.AddServer(server);
+            _nav.NavigateTo("/servers");
+        }
+    }
+}

@@ -1,0 +1,65 @@
+﻿@page "/servers/{id:int}"
+@inject NavigationManager _nav
+
+<h3>Edit Server</h3>
+
+@if (server is not null)
+{
+    <EditForm Model="server" FormName="formServer" OnValidSubmit="Submit">
+        <DataAnnotationsValidator />
+       @*  <ValidationSummary /> *@
+        
+        <InputNumber @bind-Value="server.Id" class="form-control" hidden />
+        
+        <FieldComponent Label="Name">
+            <Control>
+                <InputText @bind-Value="server.Name" class="form-control"></InputText>
+                <ValidationMessage For="() => server.Name"></ValidationMessage>
+            </Control>
+            
+        </FieldComponent>
+
+        <FieldComponent Label="City">
+            <Control>
+                <InputText @bind-Value="server.City" class="form-control"></InputText>
+                <ValidationMessage For="() => server.City"></ValidationMessage>
+            </Control>
+        </FieldComponent>
+
+        <FieldComponent Label="Online">
+            <Control>
+                <InputCheckbox @bind-Value="server.IsOnline" class="form-check-input"></InputCheckbox>
+            </Control>
+        </FieldComponent>
+
+        <div class="btn-group mt-3">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="/servers" class="btn btn-outline-dark">Back</a>
+        </div>
+    </EditForm>
+}
+
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    // [SupplyParameterFromForm(FormName = "formServer")] --> Expecify the form name in case of multiple forms
+    [SupplyParameterFromForm]
+    private Server? server { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        server ??= ServersRepos.GetServerById(this.id); // ?? If server is null, get the server by id
+    }
+
+    private void Submit()
+    {
+        if (server is not null)
+        {
+            ServersRepos.UpdateServer(server.Id, server);
+            _nav.NavigateTo("/servers");
+        }
+    }
+}

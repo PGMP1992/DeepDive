@@ -1,0 +1,97 @@
+﻿@page "/todolist"  
+@rendermode InteractiveServer
+<h3>Todo </h3>
+
+<br />
+
+@* <div class="input-group mb-2">
+    <input type="text" class="form-control" placeholder="Add Todo" @bind="todoName" />
+    <button class="btn btn-outline-secondary" type="button" @onclick="() => AddTodo">
+        Add
+    </button>
+</div> *@
+
+<button type="button"
+class="btn btn-primary mb-3"
+@onclick="AddTodo">
+    Add Task
+</button>
+
+<ul class="list-unstyled">
+    @if(items != null && items.Count > 0) 
+    {
+        foreach (var item in items)
+        {
+            <li @key="item.Id" >
+                <div class="input-group mx-2">
+                    <input type="checkbox" class="form-check-input m-2"
+                    @bind-value="item.IsCompleted" 
+                    checked="@item.IsCompleted" />
+
+                    @if (item.IsCompleted)
+                    {
+                        <input type="text" disabled 
+                            class="form-control border-0 text-decoration-line-through" 
+                            @bind-value="item.Name" />
+                    }
+                    else
+                    {
+                        <input type="text" class="form-control border-0" @bind-value="item.Name" />
+                    }
+                    @if(item.IsCompleted)
+                    {
+                        <label>@item.DateCompleted.ToLongDateString()</label>
+                    }
+                </div>
+            </li>
+        }
+    }
+</ul>
+
+@code {
+    private List<ToDoItem> items = TodoItemsRepos.GetItems();
+    private string todoName = string.Empty;
+    
+    // private void AddTodo(string name)
+    // {
+    //     if (!string.IsNullOrWhiteSpace(name))
+    //     {
+    //         TodoItemsRepos.AddItem(new ToDoItem { Name = name });
+    //         items = TodoItemsRepos.GetItems();
+    //     }
+    // }
+
+    private void AddTodo()
+    {
+        TodoItemsRepos.AddItem(new ToDoItem { Name = "" });
+        items = TodoItemsRepos.GetItems();
+    }
+
+    private void DeleteTodo()
+    {
+        items.RemoveAll(t => t.IsCompleted);
+    }
+
+    
+    private void ToggleSelectAll()
+    {
+        bool isAllSelected = items.All(t => t.IsCompleted);
+        foreach (var todo in items)
+        {
+            todo.IsCompleted = !isAllSelected;
+        }
+    }
+    
+    private void SetCompleted(ChangeEventArgs e, ToDoItem item)
+    {
+        item.IsCompleted = (bool)e.Value;
+        if (item.IsCompleted)
+        {
+            item.DateCompleted = DateTime.Now;
+        }
+        else
+        {
+            item.DateCompleted = default(DateTime);
+        }
+    }
+}

@@ -1,0 +1,52 @@
+﻿@page "/servers"
+
+@using ServerManagement.Components.Controls
+@rendermode InteractiveServer 
+
+<h3>Servers</h3>
+<br />
+
+@* // City Buttons ---------- *@
+<CityListComponent 
+    @ref="cityListComponent"
+    OnCitySelectedCallBack="HandleCitySelection" />
+<br />
+
+@* // Search Bar using two bidding -------------------*@
+<SearchBarComponent 
+    @ref="searchBarComponent"
+    SearchServerCallBack="HandleSearchServer" />
+<br />
+
+@* // Servers ---------- *@
+<CascadingValue Value="@selectedCity" Name="SelectedCity">
+    <ServerListComponent 
+        @rendermode="InteractiveServer" 
+        CityName="@selectedCity" 
+        SearchFilter="@searchFilter">
+    </ServerListComponent>
+</CascadingValue>
+<br />
+
+<a href="/servers/add" class="btn btn-primary">Add Server</a>
+
+@code {
+        
+    private string selectedCity = "";
+    private string searchFilter = "";
+    private CityListComponent? cityListComponent;
+    private SearchBarComponent? searchBarComponent;
+    
+    private void HandleCitySelection(string cityName)
+    {
+        selectedCity = cityName;
+        searchFilter = string.Empty;
+        searchBarComponent?.ClearFilter();
+    }
+
+    private void HandleSearchServer(string filter)
+    {
+        searchFilter = filter;
+        cityListComponent?.ClearSelection();
+    }
+}
