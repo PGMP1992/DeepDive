@@ -1,0 +1,12 @@
+﻿
+@if (Items != null && Items.Count > 0)
+{
+    foreach (var item in Items)
+    {
+        <ItemComponent Item="item" />
+    }
+}
+@code {
+    [Parameter]
+    public List<ToDoItem> Items { get; set; }
+}

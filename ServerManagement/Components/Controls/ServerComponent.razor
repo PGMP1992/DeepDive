@@ -21,22 +21,24 @@
             }
         </td>
         <td>
-            @if (Server.IsOnline)
-            {
-                <button type="button" class="btn btn-outline-danger"
-                    @onclick="@(()=> { Server.IsOnline = false;})">
-                    Turn Off
-                </button>
-            } 
-            else 
-            {
-                <button type="button" class="btn btn-outline-success"
-                    @onclick="@(()=> { Server.IsOnline = true;})">
-                    Turn On
-                </button>
-            }
-            &nbsp;
-            <a href="/Servers/@Server.Id" class="btn btn-link">Edit</a>
+            <div class="btn-group ">
+                @if (Server.IsOnline)
+                {
+                    <button type="button" class="btn btn-outline-danger"
+                        @onclick="@(()=> { Server.IsOnline = false;})">
+                        Turn Off
+                    </button>
+                } 
+                else 
+                {
+                    <button type="button" class="btn btn-outline-success"
+                        @onclick="@(()=> { Server.IsOnline = true;})">
+                        Turn On
+                    </button>
+                }
+                &nbsp;
+                <a type="button" href="/Servers/@Server.Id" class="btn btn-primary">Edit</a>
+            </div>
         </td>
         <td>
             <EditForm Model="Server"
@@ -77,10 +79,11 @@
     {
         return SelectedCity switch
         {
-            "Toronto"  => "lightblue",
-            "Calgary"  => "lightgreen",
-            "Montreal" => "lightcoral",
-            "Ottawa"   => "pink",
+            // switch bg-color => set to white as default
+            // "Toronto"  => "lightblue",
+            // "Calgary"  => "lightgreen",
+            // "Montreal" => "lightcoral",
+            // "Ottawa"   => "pink",
                      _ => "white"
         };
     }

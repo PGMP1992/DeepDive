@@ -10,27 +10,27 @@
             <ServerComponent Server="server" />
         </Virtualize>
     </ul> *@
-
-    <table class="table">
-        <RepeaterComponent Items="servers">
-            <Header>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>City</th>
-                        <th>Status</th>
-                        <th>People Online</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-           </Header>
-            <Row Context="server">
-                <ServerComponent Server="server" />
-            </Row>
-        </RepeaterComponent>
-    </table>
-
+    <div class="table-responsive">
+        <table class="table table-sm-3">
+            <RepeaterComponent Items="servers">
+                <Header>
+                    <thead class="table-info">
+                        <tr>
+                            <th>Name</th>
+                            <th>City</th>
+                            <th>Status</th>
+                            <th>People Online</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+               </Header>
+                <Row Context="server">
+                    <ServerComponent Server="server" />
+                </Row>
+            </RepeaterComponent>
+        </table>
+    </div>
 } else
 {
     <h1 class="text-danger">No Servers Found!</h1>
