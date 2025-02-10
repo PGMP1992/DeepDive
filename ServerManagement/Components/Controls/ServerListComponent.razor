@@ -10,6 +10,7 @@
             <ServerComponent Server="server" />
         </Virtualize>
     </ul> *@
+
     <div class="table-responsive">
         <table class="table table-sm-3">
             <RepeaterComponent Items="servers">
@@ -31,7 +32,13 @@
             </RepeaterComponent>
         </table>
     </div>
-} else
+    <br />
+
+    // The oclick event is not implemented but forces the UI to refresh anyway 
+    // which is quite clever - PM
+    <button type="button" class="btn btn-primary" @onclick="@(() => {})">Refresh</button>
+} 
+else
 {
     <h1 class="text-danger">No Servers Found!</h1>
 }
@@ -55,5 +62,10 @@
         {
             servers = ServersRepos.SearchServers(SearchFilter);
         }
+    }
+
+    private void Refresh()
+    {
+        servers = ServersRepos.GetServersByCity(CityName);
     }
 }

@@ -37,7 +37,7 @@
         if (server is not null)
         {
             ServersRepos.AddServer(server);
-            _nav.NavigateTo("/servers");
+            _nav.NavigateTo($"/servers/back_from/{server?.City}");
         }
     }
 }

@@ -1,22 +1,23 @@
-﻿@page "/servers/{id:int}"
+﻿@page "/server/{id:int?}"
 @inject NavigationManager _nav
 
-<h3>Edit Server</h3>
+@if(Id.HasValue) { <h3>Edit Server</h3> }
+else { <h3>Add Server</h3> }
 
-@if (server is not null)
+@if (server != null)
 {
     <EditForm Model="server" FormName="formServer" OnValidSubmit="Submit">
         <DataAnnotationsValidator />
-       @*  <ValidationSummary /> *@
-        
-        <InputNumber @bind-Value="server.Id" class="form-control" hidden />
-        
+        @* <ValidationSummary /> *@
+        @if (server.Id > 0)
+        {
+            <InputNumber @bind-Value="server.Id" class="form-control" hidden />
+        }
         <FieldComponent Label="Name">
             <Control>
                 <InputText @bind-Value="server.Name" class="form-control"></InputText>
                 <ValidationMessage For="() => server.Name"></ValidationMessage>
             </Control>
-            
         </FieldComponent>
 
         <FieldComponent Label="City">
@@ -33,33 +34,52 @@
         </FieldComponent>
 
         <div class="btn-group mt-3">
-            <button type="submit" class="btn btn-primary">Update</button>
+            @if (server.Id > 0 )
+            {
+                <button type="submit" class="btn btn-primary">Update</button>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-primary">Add</button>
+            }
             <a href="/servers" class="btn btn-outline-dark">Back</a>
         </div>
     </EditForm>
 }
 
-
-
 @code {
     [Parameter]
-    public int id { get; set; }
+    public int? Id { get; set; }
 
-    // [SupplyParameterFromForm(FormName = "formServer")] --> Expecify the form name in case of multiple forms
+    [SupplyParameterFromQuery]
+    public string? FromQueryCity { get; set; }
+
     [SupplyParameterFromForm]
     private Server? server { get; set; }
 
     protected override void OnParametersSet()
     {
-        server ??= ServersRepos.GetServerById(this.id); // ?? If server is null, get the server by id
+        if (Id.HasValue)
+            server ??= ServersRepos.GetServerById(Id.Value);
+        else
+            server ??= new Server() { IsOnline = false };
+
+        if (server is not null && !string.IsNullOrEmpty(FromQueryCity))
+        {
+            server.City = FromQueryCity;
+        }
     }
 
     private void Submit()
     {
         if (server is not null)
         {
-            ServersRepos.UpdateServer(server.Id, server);
-            _nav.NavigateTo($"/servers/back_from/{server?.City}");
+            if (Id.HasValue)
+                ServersRepos.UpdateServer(server.Id, server);
+            else
+                ServersRepos.AddServer(server);
+            
+                _nav.NavigateTo($"/servers/back_from/{server?.City}");
         }
     }
 }

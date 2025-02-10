@@ -2,9 +2,10 @@
     <input type="text" class="input-width" placeholder="Search Servers"
         @bind-value="serverFilter"
         @bind-value:event="oninput"
-        aria-label="Search" aria-describedby="button-addon2" />
+        aria-label="Search" aria-describedby="button-addon2">
+    </input>
     <button class="btn btn-outline-secondary" type="button" id="button-search"
-    @onclick="HandleSearch">
+        @onclick="HandleSearch">
         Search
     </button>
 </div>
@@ -16,7 +17,6 @@
 
     [Parameter(CaptureUnmatchedValues =true)]
     public Dictionary<string, object>? ExtraAttributes { get; set; }
-
     
     public string serverFilter = "";
 

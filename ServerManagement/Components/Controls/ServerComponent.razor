@@ -9,17 +9,19 @@
         <td style="color:@((Server.IsOnline ? "green" : "red"))">
             @(Server.IsOnline ? "online" : "offline")
         </td>
+        
         <td>
             @if (Server.IsOnline)
             {
                 Random random = new Random();
                 int randomNumber = random.Next(0, 10000);
-                <text>@randomNumber online</text>
+                <text>@randomNumber</text>
             }
             else { 
                 <text>N/A</text>
             }
         </td>
+        
         <td>
             <div class="btn-group ">
                 @if (Server.IsOnline)
@@ -37,9 +39,10 @@
                     </button>
                 }
                 &nbsp;
-                <a type="button" href="/Servers/@Server.Id" class="btn btn-primary">Edit</a>
+                <a type="button" href="/Server/@Server.Id" class="btn btn-primary">Edit</a>
             </div>
         </td>
+        
         <td>
             <EditForm Model="Server"
                 FormName="@($"form-Server-{Server.Id}")"

@@ -1,4 +1,5 @@
-﻿@page "/weather"
+﻿@page "/weather/{name?}" 
+@* Above shows using Optional Parameter in the URL using "?" . *@
 @attribute [StreamRendering]
 
 <PageTitle>Weather</PageTitle>
@@ -37,6 +38,9 @@ else
 }
 
 @code {
+    [Parameter]
+    public string Name { get; set; }
+
     private WeatherForecast[]? forecasts;
 
     protected override async Task OnInitializedAsync()

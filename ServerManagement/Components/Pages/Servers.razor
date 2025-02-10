@@ -1,6 +1,6 @@
 ﻿@page "/servers"
-
-@using ServerManagement.Components.Controls
+@page "/servers/back_from/{cityName}"
+@inject NavigationManager _nav
 @rendermode InteractiveServer 
 
 <h3>Servers</h3>
@@ -9,15 +9,18 @@
 @* // City Buttons ---------- *@
 <CityListComponent 
     @ref="cityListComponent"
-    OnCitySelectedCallBack="HandleCitySelection" />
+    OnCitySelectedCallBack="HandleCitySelection"
+    selectedCity="@selectedCity">
+</CityListComponent>
 <br />
 
-@* // Search Bar using two bidding -------------------*@
+@* // Search Bar using two bidding ------------------- *@
 @* Using ExtraAttributes to pass in the style attribute defined in Child Component   
     @attributes="ExtraAttributes" ==> "style="width:70%" *@
 <SearchBarComponent 
     @ref="searchBarComponent"
-    SearchServerCallBack="HandleSearchServer" />
+    SearchServerCallBack="HandleSearchServer">
+</SearchBarComponent>
 <br />
 
 @* // Servers ---------- *@
@@ -30,11 +33,17 @@
 </CascadingValue>
 <br />
 
-<a href="/servers/add" class="btn btn-primary">Add Server</a>
+<br />
+<a href="/server" class="btn btn-primary">Add Server</a>
+
 
 @code {
-        
-    private string selectedCity = "Toronto";
+    [Parameter]
+    public string? cityName { get; set; } // This is the parameter passed from the URL
+
+    [Parameter]
+    public string selectedCity { get; set; } = "Toronto";
+
     private string searchFilter = "";
     private CityListComponent? cityListComponent;
     private SearchBarComponent? searchBarComponent;
@@ -50,5 +59,18 @@
     {
         searchFilter = filter;
         cityListComponent?.ClearSelection();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (_nav.Uri.Contains("back_from") 
+                && !string.IsNullOrWhiteSpace(cityName))
+            {
+                selectedCity = cityName;
+                StateHasChanged();
+            }
+        }
     }
 }
