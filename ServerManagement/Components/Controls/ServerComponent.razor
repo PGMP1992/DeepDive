@@ -1,15 +1,16 @@
 ﻿@inject NavigationManager _nav
+@inject TorontoServersStore _torontoServers 
 
 @if( Server is not null)
 {
     <tr style="background-color: @GetBackgroundColor()">
         <td>@Server.Name</td>
         <td>@Server.City</td>
-        
+
         <td style="color:@((Server.IsOnline ? "green" : "red"))">
             @(Server.IsOnline ? "online" : "offline")
         </td>
-        
+
         <td>
             @if (Server.IsOnline)
             {
@@ -21,20 +22,20 @@
                 <text>N/A</text>
             }
         </td>
-        
+
         <td>
             <div class="btn-group ">
                 @if (Server.IsOnline)
                 {
                     <button type="button" class="btn btn-outline-danger"
-                        @onclick="@(()=> { Server.IsOnline = false;})">
+                    @onclick="@(() => { SetStatus(false); })">
                         Turn Off
                     </button>
                 } 
                 else 
                 {
                     <button type="button" class="btn btn-outline-success"
-                        @onclick="@(()=> { Server.IsOnline = true;})">
+                    @onclick="@(() => { SetStatus(true); })">
                         Turn On
                     </button>
                 }
@@ -42,11 +43,11 @@
                 <a type="button" href="/Server/@Server.Id" class="btn btn-primary">Edit</a>
             </div>
         </td>
-        
+
         <td>
             <EditForm Model="Server"
-                FormName="@($"form-Server-{Server.Id}")"
-                OnValidSubmit="@(() => { DeleteServer(Server.Id); })">
+            FormName="@($"form-Server-{Server.Id}")"
+            OnValidSubmit="@(() => { DeleteServer(Server.Id); })">
                 <button type="submit" class="btn btn-danger">Delete</button>
             </EditForm>
         </td>
@@ -60,7 +61,7 @@
     [CascadingParameter(Name ="SelectedCity")]
     public string? SelectedCity { get; set; }
 
-      
+
     // private void ChangeStatus()
     // {
     //     if (Server is not null)
@@ -87,7 +88,30 @@
             // "Calgary"  => "lightgreen",
             // "Montreal" => "lightcoral",
             // "Ottawa"   => "pink",
-                     _ => "white"
+            _ => "white"
         };
+    }
+
+    private void SetStatus(bool status)
+    {
+        if (Server != null)
+        {
+            if (Server.IsOnline != status)
+            {
+                if (Server.City.Equals("Toronto", StringComparison.OrdinalIgnoreCase))
+                {
+                    var num = _torontoServers.GetServersOnline();
+                    if( status)
+                    {
+                        _torontoServers.SetServersOnline(num++);
+                    }
+                    else if(num >= 1)
+                    {
+                        _torontoServers.SetServersOnline(num--);
+                    }
+                }
+                Server.IsOnline = status;
+            }
+        }
     }
 }

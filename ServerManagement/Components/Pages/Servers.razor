@@ -1,6 +1,7 @@
 ﻿@page "/servers"
 @page "/servers/back_from/{cityName}"
 @inject NavigationManager _nav
+@inject TorontoServersStore _torontoServersStore
 @rendermode InteractiveServer 
 
 <h3>Servers</h3>
@@ -18,8 +19,8 @@
 @* Using ExtraAttributes to pass in the style attribute defined in Child Component   
     @attributes="ExtraAttributes" ==> "style="width:70%" *@
 <SearchBarComponent 
-    @ref="searchBarComponent"
-    SearchServerCallBack="HandleSearchServer">
+@ref="searchBarComponent"
+SearchServerCallBack="HandleSearchServer">
 </SearchBarComponent>
 <br />
 
@@ -47,7 +48,7 @@
     private string searchFilter = "";
     private CityListComponent? cityListComponent;
     private SearchBarComponent? searchBarComponent;
-    
+
     private void HandleCitySelection(string cityName)
     {
         selectedCity = cityName;
@@ -70,6 +71,11 @@
             {
                 selectedCity = cityName;
                 StateHasChanged();
+            }
+            var serversToronto = ServersRepos.GetServersByCity("Toronto");
+            if( serversToronto is not null)
+            {
+                _torontoServersStore.SetServersOnline( serversToronto.Count( x => x.IsOnline ));
             }
         }
     }
