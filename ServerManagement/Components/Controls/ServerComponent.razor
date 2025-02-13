@@ -1,5 +1,6 @@
 ﻿@inject NavigationManager _nav
 @inject TorontoServersStore _torontoServers 
+@inject IServerRepos _serverRepos
 
 @if( Server is not null)
 {
@@ -7,7 +8,7 @@
         <td>@Server.Name</td>
         <td>@Server.City</td>
 
-        <td style="color:@((Server.IsOnline ? "green" : "red"))">
+        <td style="color:@((Server.IsOnline ? "green" : "red")) ">
             @(Server.IsOnline ? "online" : "offline")
         </td>
 
@@ -28,14 +29,14 @@
                 @if (Server.IsOnline)
                 {
                     <button type="button" class="btn btn-outline-danger"
-                    @onclick="@(() => { SetStatus(false); })">
+                        @onclick="@(() => { SetStatus(false); })">
                         Turn Off
                     </button>
                 } 
                 else 
                 {
                     <button type="button" class="btn btn-outline-success"
-                    @onclick="@(() => { SetStatus(true); })">
+                        @onclick="@(() => { SetStatus(true); })">
                         Turn On
                     </button>
                 }
@@ -74,7 +75,7 @@
     {
         if (Id > 0)
         {
-            ServersRepos.DeleteServer(Id);
+            _serverRepos.Delete(Id);
             _nav.NavigateTo("/servers", true);
         }
     }
@@ -84,10 +85,10 @@
         return SelectedCity switch
         {
             // switch bg-color => set to white as default
-            // "Toronto"  => "lightblue",
-            // "Calgary"  => "lightgreen",
-            // "Montreal" => "lightcoral",
-            // "Ottawa"   => "pink",
+            "Toronto"  => "lightblue",
+            "Calgary"  => "lightgreen",
+            "Montreal" => "lightcoral",
+            "Ottawa"   => "pink",
             _ => "white"
         };
     }
@@ -98,7 +99,7 @@
         {
             if (Server.IsOnline != status)
             {
-                if (Server.City.Equals("Toronto", StringComparison.OrdinalIgnoreCase))
+                if (Server.City!.Equals("Toronto", StringComparison.OrdinalIgnoreCase))
                 {
                     var num = _torontoServers.GetServersOnline();
                     if( status)
@@ -111,6 +112,7 @@
                     }
                 }
                 Server.IsOnline = status;
+                _serverRepos.Update(Server.Id, Server);
             }
         }
     }

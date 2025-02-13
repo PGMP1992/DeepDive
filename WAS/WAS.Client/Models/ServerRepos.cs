@@ -1,12 +1,11 @@
-﻿namespace ServerManagement.Models
+﻿namespace WAS.Client.Models
 {
-    public static class ServersRepos
+    public static class ServersRepository
     {
         private static List<Server> servers = new List<Server>()
         {
             new Server {  Id = 1, Name = "Server1", City = "Toronto" },
             new Server {  Id = 2, Name = "Server2", City = "Toronto" },
-            new Server {  Id = 3, Name = "Server3", City = "Toronto" },
             new Server {  Id = 4, Name = "Server4", City = "Toronto" },
             new Server {  Id = 5, Name = "Server5", City = "Montreal" },
             new Server {  Id = 6, Name = "Server6", City = "Montreal" },
@@ -17,6 +16,8 @@
             new Server {  Id = 11, Name = "Server11", City = "Calgary" },
             new Server {  Id = 12, Name = "Server12", City = "Halifax" },
             new Server {  Id = 13, Name = "Server13", City = "Halifax" },
+            new Server {  Id = 14, Name = "Server14", City = "Halifax" },
+            new Server {  Id = 15, Name = "Server15", City = "Halifax" },
         };
 
         public static void AddServer(Server server)
@@ -50,24 +51,22 @@
             return null;
         }
 
-        public static void UpdateServer(int serverId, Server server)
+        public static void UpdateServer(int Id, Server server)
         {
-            if (serverId != server.Id) 
-                return;
+            if (Id != server.Id) return;
 
-            var serverToUpdate = servers.FirstOrDefault(s => s.Id == serverId);
-            
+            var serverToUpdate = servers.FirstOrDefault(s => s.Id == Id);
             if (serverToUpdate != null)
             {
+                serverToUpdate.IsOnline = server.IsOnline;
                 serverToUpdate.Name = server.Name;
                 serverToUpdate.City = server.City;
-                serverToUpdate.IsOnline = server.IsOnline;
             }
         }
 
-        public static void DeleteServer(int serverId)
+        public static void DeleteServer(int Id)
         {
-            var server = servers.FirstOrDefault(s => s.Id == serverId);
+            var server = servers.FirstOrDefault(s => s.Id == Id);
             if (server != null)
             {
                 servers.Remove(server);

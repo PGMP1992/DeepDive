@@ -1,0 +1,26 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WAS.Client.Models
+{
+    public class Server
+    {
+        //public Server()
+        //{
+        //    Random random = new Random();
+        //    int randomNumber = random.Next(0, 2);
+        //    IsOnline = randomNumber == 0 ? false : true;
+        //}
+
+        public int Id { get; set; }
+                
+        [Required]
+        [MaxLength(50)]
+        public string? Name { get; set; }
+        
+        [Required]
+        [MaxLength(50)]
+        public string? City { get; set; }
+        
+        public bool IsOnline { get; set; }
+    }
+}

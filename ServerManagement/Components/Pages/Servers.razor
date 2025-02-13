@@ -1,49 +1,51 @@
 ﻿@page "/servers"
 @page "/servers/back_from/{cityName}"
+@using Microsoft.AspNetCore.Authorization
 @inject NavigationManager _nav
 @inject TorontoServersStore _torontoServersStore
+@inject IServerRepos _serverRepos
 @rendermode InteractiveServer 
+@attribute [Authorize]
 
 <h3>Servers</h3>
 <br />
 
-@* // City Buttons ---------- *@
-<CityListComponent 
-    @ref="cityListComponent"
-    OnCitySelectedCallBack="HandleCitySelection"
-    selectedCity="@selectedCity">
-</CityListComponent>
-<br />
+    @* // City Buttons ---------- *@
+    <CityListComponent 
+        @ref="cityListComponent"
+        OnCitySelectedCallBack="HandleCitySelection"
+        selectedCity="@selectedCity">
+    </CityListComponent>
+    <br />
 
-@* // Search Bar using two bidding ------------------- *@
-@* Using ExtraAttributes to pass in the style attribute defined in Child Component   
-    @attributes="ExtraAttributes" ==> "style="width:70%" *@
-<SearchBarComponent 
-@ref="searchBarComponent"
-SearchServerCallBack="HandleSearchServer">
-</SearchBarComponent>
-<br />
+    @* // Search Bar using two bidding ------------------- *@
+    @* Using ExtraAttributes to pass in the style attribute defined in Child Component   
+        @attributes="ExtraAttributes" ==> "style="width:70%" *@
+    <SearchBarComponent 
+    @ref="searchBarComponent"
+    SearchServerCallBack="HandleSearchServer">
+    </SearchBarComponent>
+    <br />
 
-@* // Servers ---------- *@
-<CascadingValue Value="@selectedCity" Name="SelectedCity">
-    <ServerListComponent 
-        @rendermode="InteractiveServer" 
-        CityName="@selectedCity" 
-        SearchFilter="@searchFilter">
-    </ServerListComponent>
-</CascadingValue>
-<br />
+    @* // Servers ---------- *@
+    <CascadingValue Value="@selectedCity" Name="SelectedCity">
+        <ServerListComponent 
+            @rendermode="InteractiveServer" 
+            CityName="@selectedCity" 
+            SearchFilter="@searchFilter">
+        </ServerListComponent>
+    </CascadingValue>
+    <br />
 
-<br />
-<a href="/server" class="btn btn-primary">Add Server</a>
-
+    <br />
+    <a href="/server" class="btn btn-primary">Add Server</a>
 
 @code {
     [Parameter]
     public string? cityName { get; set; } // This is the parameter passed from the URL
 
-    [Parameter]
-    public string selectedCity { get; set; } = "Toronto";
+    //[Parameter]
+    public string selectedCity = "Toronto";
 
     private string searchFilter = "";
     private CityListComponent? cityListComponent;
@@ -72,7 +74,8 @@ SearchServerCallBack="HandleSearchServer">
                 selectedCity = cityName;
                 StateHasChanged();
             }
-            var serversToronto = ServersRepos.GetServersByCity("Toronto");
+            var serversToronto = _serverRepos.GetByCity("Toronto");
+   
             if( serversToronto is not null)
             {
                 _torontoServersStore.SetServersOnline( serversToronto.Count( x => x.IsOnline ));

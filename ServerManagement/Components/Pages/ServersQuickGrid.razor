@@ -1,17 +1,21 @@
 ﻿@page "/servers/quickgrid"
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.QuickGrid
-@rendermode InteractiveServer
 @inject NavigationManager _nav
+@inject IServerRepos _serverRepos 
+@attribute [Authorize]
+
+@rendermode InteractiveServer
 
 <h1>Servers Grid</h1>
 <br />
-@if( servers != null) {
-    
-    
+
+@if( servers != null) 
+{
     <QuickGrid items="servers.AsQueryable()" Pagination="paginationState">
-        <PropertyColumn Property="s => s.Name"></PropertyColumn>
+        <PropertyColumn Property="s => s.Name" Sortable="true"></PropertyColumn>
         <PropertyColumn Property="s => s.City" Sortable="true"></PropertyColumn>
-        
+
         <TemplateColumn Title="Status" 
             Sortable="true" 
             SortBy="GridSort<Server>.ByAscending(s => s.IsOnline)">
@@ -29,7 +33,8 @@
             }
         </TemplateColumn>
 
-        <TemplateColumn Title="People Online">
+        <TemplateColumn Title="People Online"
+            Sortable=" true">
             @if (context.IsOnline)
             {
                 Random random = new Random();
@@ -41,40 +46,38 @@
                 <text>N/A</text>
             }
         </TemplateColumn>
-        
+
         <TemplateColumn>
             @if (context.IsOnline)
             {
-                <button type="button"
-                        class="btn btn-outline-danger"
-                        @onclick="@(()=> {context.IsOnline = false;})">
+                <button type="button" class="btn btn-outline-danger"
+                    @onclick="@(()=> {context.IsOnline = false;})">
                     Turn Off
                 </button>
             }
             else
             {
-                <button type="button"
-                        class="btn btn-outline-success"
-                        @onclick="@(()=> {context.IsOnline = true;})">
+                <button type="button" class="btn btn-outline-success"
+                    @onclick="@(()=> {context.IsOnline = true;})">
                     Turn On
                 </button>
             }
         </TemplateColumn>
-        
-         <TemplateColumn>
+
+        <TemplateColumn>
             <a href="/servers/@context.Id" class="btn btn-outline-primary">Edit</a>
         </TemplateColumn>
-        
+
         <TemplateColumn>
             <ChildContent Context="server">
                 <EditForm Model="server"
-                    FormName="@($"form-Server-{server.Id}")"
-                    OnValidSubmit="@(() => { DeleteServer(server.Id); })">
+                FormName="@($"form-Server-{server.Id}")"
+                OnValidSubmit="@(() => { DeleteServer(server.Id); })">
                     <button type="submit" class="btn btn-primary">Delete</button>
                 </EditForm>
             </ChildContent>
         </TemplateColumn> 
-   
+
     </QuickGrid>
     <Paginator State="paginationState" />
 }
@@ -84,22 +87,28 @@ else
 }
 
 @code {
-    private List<Server>? servers = new List<Server>();
-    private PaginationState paginationState = new PaginationState{ItemsPerPage= 5 };
+    private List<Server>? servers;
+    private PaginationState paginationState = new PaginationState{ItemsPerPage= 10 };
 
     protected override void OnInitialized()
     {
-        servers = ServersRepos.GetServers();
+        servers = _serverRepos.GetAll();
     }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender) 
+            servers = _serverRepos.GetAll();
+    }
+    
 
     private void DeleteServer(int Id)
     {
         if (Id > 0)
         {
-            ServersRepos.DeleteServer(Id);
+            _serverRepos.Delete(Id);
             //servers = ServersRepos.GetServers();
             _nav.NavigateTo("/servers/quickgrid", true);
         }
     }
-
 }

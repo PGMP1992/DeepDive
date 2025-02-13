@@ -51,14 +51,14 @@
 
     protected override void OnParametersSet()
     {
-        server ??= ServersRepos.GetServerById(this.id); // ?? If server is null, get the server by id
+        server ??= MemoryServersRepos.GetById(this.id); // ?? If server is null, get the server by id
     }
 
     private void Submit()
     {
         if (server is not null)
         {
-            ServersRepos.UpdateServer(server.Id, server);
+            MemoryServersRepos.Update(server.Id, server);
             _nav.NavigateTo($"/servers/back_from/{server?.City}");
         }
     }

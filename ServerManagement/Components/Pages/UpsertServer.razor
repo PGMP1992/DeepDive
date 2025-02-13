@@ -1,5 +1,8 @@
 ﻿@page "/server/{id:int?}"
+@using Microsoft.AspNetCore.Authorization
 @inject NavigationManager _nav
+@inject IServerRepos _serverRepos
+@attribute [Authorize]
 
 @if(Id.HasValue) { <h3>Edit Server</h3> }
 else { <h3>Add Server</h3> }
@@ -60,7 +63,7 @@ else { <h3>Add Server</h3> }
     protected override void OnParametersSet()
     {
         if (Id.HasValue)
-            server ??= ServersRepos.GetServerById(Id.Value);
+            server ??= _serverRepos.GetById(Id.Value);
         else
             server ??= new Server() { IsOnline = false };
 
@@ -70,16 +73,16 @@ else { <h3>Add Server</h3> }
         }
     }
 
-    private void Submit()
+    private async Task Submit()
     {
         if (server is not null)
         {
             if (Id.HasValue)
-                ServersRepos.UpdateServer(server.Id, server);
+                _serverRepos.Update(server.Id, server);
             else
-                ServersRepos.AddServer(server);
+                _serverRepos.Add(server);
             
-                _nav.NavigateTo($"/servers/back_from/{server?.City}");
+            _nav.NavigateTo($"/servers/back_from/{server?.City}", true);
         }
     }
 }
