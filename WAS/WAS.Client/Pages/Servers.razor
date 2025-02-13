@@ -6,8 +6,9 @@
 @inject NavigationManager NavigationManager
 @inject IServersRepos _APIRepos
 @inject IJSRuntime _JS
+@attribute [Authorize]
 
-<h3>Servers</h3>
+<h1>Servers WASM Client</h1>
 <br />
 <br />
 
@@ -37,6 +38,10 @@
                     </tr>
                 }
             }
+        }
+        else
+        {
+            <p><em>Loading...</em></p>
         }
     </tbody>
 </table>

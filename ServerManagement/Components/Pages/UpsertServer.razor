@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @inject NavigationManager _nav
 @inject IServerRepos _serverRepos
-@attribute [Authorize]
+@attribute [Authorize(Policy = "Manager")]
 
 @if(Id.HasValue) { <h3>Edit Server</h3> }
 else { <h3>Add Server</h3> }
@@ -36,7 +36,7 @@ else { <h3>Add Server</h3> }
             </Control>
         </FieldComponent>
 
-        <div class="btn-group mt-3">
+        @* <div class="btn-group mt-3">
             @if (server.Id > 0 )
             {
                 <button type="submit" class="btn btn-primary">Update</button>
@@ -46,7 +46,13 @@ else { <h3>Add Server</h3> }
                 <button type="submit" class="btn btn-primary">Add</button>
             }
             <a href="/servers" class="btn btn-outline-dark">Back</a>
-        </div>
+        </div> *@
+        <div class="border-top" />
+        <ButtonGroup 
+            Button1="Save"
+            Button2="Close" Button2Ref="/servers/add">
+            <p> This was not supposed to be here </p>
+        </ButtonGroup>
     </EditForm>
 }
 

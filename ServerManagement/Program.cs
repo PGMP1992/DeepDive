@@ -19,6 +19,8 @@ builder.Services.AddDbContextFactory<AppDbContext>(options =>
 builder.Services.AddTransient<IServerRepos,ServerRepos>();
 builder.Services.AddScoped<TorontoServersStore>();
 
+// 
+// Identity, Authentication and Authorization ------------------------- 
 builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddScoped<IdentityUserAccessor>();
@@ -39,7 +41,15 @@ builder.Services.AddIdentityCore<AppUser>(options => options.SignIn.RequireConfi
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
+// Adding Policies for Authorization
+builder.Services.AddAuthorizationCore(options =>
+{
+    options.AddPolicy("Manager", policy => policy.RequireClaim("Role", "Manager"));
+});
+
 builder.Services.AddSingleton<IEmailSender<AppUser>, IdentityNoOpEmailSender>();
+// End of 
+// Identity, Authentication and Authorization ------------------------- 
 
 var app = builder.Build();
 

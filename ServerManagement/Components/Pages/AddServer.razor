@@ -1,6 +1,8 @@
 ﻿@page "/servers/add"
+@using Microsoft.AspNetCore.Authorization
 @* @rendermode InteractiveServer *@
 @inject NavigationManager _nav
+@attribute [Authorize]
 
 <h3>Add Server</h3>
 

@@ -1,0 +1,45 @@
+﻿<div class="card">
+    <div class="card-header">
+        <h3>@Title</h3>
+    </div>
+    <div class="card-body">
+        @ChildContent
+        <button class="btn btn-primary" @onclick="HandleButtonClick">Click Me</button>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Default Title";
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public EventCallback OnButtonClick { get; set; }
+
+    private async Task HandleButtonClick()
+    {
+        if (OnButtonClick.HasDelegate)
+        {
+            await OnButtonClick.InvokeAsync(null);
+        }
+    }
+}
+
+
+@*  How to use on the Parent Component
+
+<DefaultComponent Title="My Custom Title" OnButtonClick="HandleButtonClick">
+    <p>This is some custom content inside the default component.</p>
+</DefaultComponent>
+
+@code {
+    private void HandleButtonClick()
+    {
+        Console.WriteLine("Button clicked!");
+    }
+} 
+
+*@

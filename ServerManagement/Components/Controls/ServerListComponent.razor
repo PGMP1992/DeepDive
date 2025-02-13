@@ -1,49 +1,55 @@
 ﻿@inject NavigationManager _nav
 @inject IServerRepos _serverRepos
 
-@if( servers != null && servers.Count > 0) {
-    @* ---------------------------------------------------------
-      Original below without Components break out into layers
-      Field/Repeater
-    *@
-    @* <ul class="list-unstyled">
-        <Virtualize Items="this.servers" Context="server">
-            <ServerComponent Server="server" />
-        </Virtualize>
-    </ul> *@
-
-    <div class="table-responsive">
-        <table class="table table-sm-3">
-            <RepeaterComponent Items="servers">
-                <Header>
-                    <thead class="table-info">
-                        <tr>
-                            <th>Name</th>
-                            <th>City</th>
-                            <th>Status</th>
-                            <th>People Online</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-               </Header>
-                <Row Context="server">
-                    <ServerComponent Server="server" />
-                </Row>
-            </RepeaterComponent>
-        </table>
-    </div>
-    <br />
-
-    // The oclick event is not implemented but forces the UI to refresh anyway 
-    // which is quite clever - PM
-    <button type="button" class="btn btn-primary" @onclick="@(() => {})">Refresh</button>
-} 
+@if (servers == null)
+{
+    <p><em>Loading...</em></p>
+}
 else
 {
-    <h1 class="text-danger">No Servers Found!</h1>
-}
+    @if( servers != null && servers.Count > 0) {
+        @* ---------------------------------------------------------
+          Original below without Components break out into layers
+          Field/Repeater
+        *@
+        @* <ul class="list-unstyled">
+            <Virtualize Items="this.servers" Context="server">
+                <ServerComponent Server="server" />
+            </Virtualize>
+        </ul> *@
 
+        <div class="table-responsive">
+            <table class="table table-sm-3">
+                <RepeaterComponent Items="servers">
+                    <Header>
+                        <thead class="table-info">
+                            <tr>
+                                <th>Name</th>
+                                <th>City</th>
+                                <th>Status</th>
+                                <th>People Online</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                   </Header>
+                    <Row Context="server">
+                        <ServerComponent Server="server" />
+                    </Row>
+                </RepeaterComponent>
+            </table>
+        </div>
+        <br />
+
+        // The oclick event is not implemented but forces the UI to refresh anyway 
+        // which is quite clever - PM
+        <button type="button" class="btn btn-primary" @onclick="@(() => {})">Refresh</button>
+    } 
+    else
+    {
+        <h1 class="text-danger">No Servers Found!</h1>
+    }
+}
 @code {
     [Parameter]
     public string? CityName { get; set; }

@@ -47,8 +47,8 @@
 
         <td>
             <EditForm Model="Server"
-            FormName="@($"form-Server-{Server.Id}")"
-            OnValidSubmit="@(() => { DeleteServer(Server.Id); })">
+                FormName="@($"form-Server-{Server.Id}")"
+                OnValidSubmit="@(() => { DeleteServer(Server.Id); })">
                 <button type="submit" class="btn btn-danger">Delete</button>
             </EditForm>
         </td>
